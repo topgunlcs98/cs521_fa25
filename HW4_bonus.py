@@ -173,7 +173,6 @@ def analyze_reward_hacking(good_results: Dict, hackable_results: Dict):
     print(f"Good Reward Model - Final Average: {good_results['rewards'][-1]:.3f}")
     print(f"Hackable Reward Model - Final Average: {hackable_results['rewards'][-1]:.3f}")
 
-    # Plot reward curves
     plt.figure(figsize=(12, 5))
 
     plt.subplot(1, 2, 1)
@@ -185,24 +184,19 @@ def analyze_reward_hacking(good_results: Dict, hackable_results: Dict):
     plt.title('Reward Progression During Training')
     plt.legend()
     plt.grid(True, alpha=0.3)
-
-    # Analyze example generations
-    print("\n2. EXAMPLE GENERATIONS (Final Epoch):")
+    print("\n2. EXAMPLE GENERATIONS:")
     print("\n   Good Reward Model Examples:")
     for i, ex in enumerate(good_results['examples'][-3:]):
         if ex['epoch'] == len(good_results['rewards']) - 1:
-            print(f"   [{i+1}] Generated: {ex['generated'][:100]}...")
+            print(f"   [{i+1}] Generated: {ex['generated']}")
             print(f"       Reward: {ex['reward']:.3f}\n")
 
     print("\n   Hackable Reward Model Examples:")
     for i, ex in enumerate(hackable_results['examples'][-3:]):
         if ex['epoch'] == len(hackable_results['rewards']) - 1:
-            print(f"   [{i+1}] Generated: {ex['generated'][:100]}...")
+            print(f"   [{i+1}] Generated: {ex['generated']}...")
             print(f"       Reward: {ex['reward']:.3f}\n")
-
-    # Analyze text characteristics
-    print("\n3. TEXT CHARACTERISTICS ANALYSIS:")
-
+    print("\n3. TEXT ANALYSIS:")
     good_final_texts = [ex['generated'] for ex in good_results['examples']
                         if ex['epoch'] == len(good_results['rewards']) - 1]
     hack_final_texts = [ex['generated'] for ex in hackable_results['examples']
@@ -226,14 +220,12 @@ def analyze_reward_hacking(good_results: Dict, hackable_results: Dict):
                 hack_repetition.append(len(set(words)) / len(words))
 
         print(f"   Good Model - Avg Length: {good_avg_len:.1f} chars")
-        print(f"   Hackable Model - Avg Length: {hack_avg_len:.1f} chars")
+        print(f"   Hacked Model - Avg Length: {hack_avg_len:.1f} chars")
         print(f"   Good Model - Unique Word Ratio: {np.mean(good_repetition):.3f}")
-        print(f"   Hackable Model - Unique Word Ratio: {np.mean(hack_repetition):.3f}")
-
-        # Plot text statistics
+        print(f"   Hacked Model - Unique Word Ratio: {np.mean(hack_repetition):.3f}")
         plt.subplot(1, 2, 2)
         categories = ['Avg Length', 'Unique Word\nRatio']
-        good_stats = [good_avg_len / 10, np.mean(good_repetition)]  # Normalize length
+        good_stats = [good_avg_len / 10, np.mean(good_repetition)]
         hack_stats = [hack_avg_len / 10, np.mean(hack_repetition)]
 
         x = np.arange(len(categories))
